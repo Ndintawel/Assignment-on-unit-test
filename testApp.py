@@ -1,16 +1,26 @@
-# testapp.py
+# test_app.py
+import unittest
 
-from app import app  
+#import the instance of the object app from the class app
+from app import app
 
-def test_home():
-    
-    with app.test_client() as client:
-        response = client.get('/')  
+#Defines a new class called testapp
+class TestApp(unittest.TestCase):
+    def setUp(self):
+        #set up the test client
+        self.app = app.test_client()
+        self.app.testing = True
 
-        # Check that the response status code is 200 (OK)
-        assert response.status_code == 200, f"Expected status code 200 but got {response.status_code}"
+    def test_home_route(self):
+        #send a GET response to the '/' route
+        response = self.app.get('/')
 
-        # Check that the response data matches the expected JSON structure
-        expected_response = {"message": "Hello level 400 FET, Quality Assurance!"}
-        assert response.get_json() == expected_response, \
-            f"Expected JSON response {expected_response} but got {response.get_json()}"
+        #check that the response status code is 200 (OK)
+        self.assertEqual(response.status_code, 200)
+
+        #check that the response JSON match the expected message
+        self.assertEqual(response.json, {"message": "Hello level 400 FET, Quality Assurance!"})
+
+
+if __name__ == '__main__':
+    unittest.main()
